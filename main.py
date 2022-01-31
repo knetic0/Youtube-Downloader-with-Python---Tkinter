@@ -1,7 +1,10 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
-from pytube import YouTube 
+from pytube import YouTube
+import os
+
+
 
 Folder_Name = ""
 
@@ -9,6 +12,7 @@ Folder_Name = ""
 def openLocation():
     global Folder_Name
     Folder_Name = filedialog.askdirectory()
+
     if(len(Folder_Name) > 1):
         locationError.config(text=Folder_Name,fg="green")
     else:
@@ -29,19 +33,23 @@ def DownloadVideo():
             select = yt.streams.filter(progressive=True,file_extension='mp4').last()    
 
         elif(choice == choices[2]):
-            select = yt.streams.filter(only_audio=True).first()    
-          
+            select = yt.streams.filter(only_audio=True).first()
+            output = select.download(Folder_Name)
+            base, ext = os.path.splitext(output)
+            to_mp3 = base + '.mp3'
+            os.rename(output, to_mp3)
+            ytdError.config(text="İndirme Tamamlandı!",fg='green')
         else:
             ytdError.config(text="Linki Yeniden Yapıştırınız!", fg="red")
 
-
-    #download function
-    select.download(Folder_Name)
-    ytdError.config(text="İndirme Tamamlandı!")
+    if(choice != choices[2]):
+        #download function
+        select.download(Folder_Name)
+        ytdError.config(text="İndirme Tamamlandı!",fg='green')
 
 root = Tk()
 root.title("YTD Downloader")
-root.geometry("350x400") 
+root.geometry("500x300") 
 root.columnconfigure(0,weight=1)
 
 #ytd link konumu
@@ -53,37 +61,37 @@ ytdEntryVar = StringVar()
 ytdEntry = Entry(root,width=50,textvariable =ytdEntryVar)
 ytdEntry.grid()
 
+
 #hata mesajı
-ytdError = Label(root,text="Hata!",fg="red",font=("jost",10))
-ytdError.grid()
+ytdError = Label(root,text="Video Linkini Giriniz!",fg="red",font=("jost",10))
+ytdError.grid(pady=5,padx=0)
 
 #kaydedilen dosya konumunu sor
-saveLabel = Label(root,text="Video Dosyasını Kaydet",font=("jost",15,"bold"))
-saveLabel.grid()
+saveLabel = Label(root,text="Video Dosyasının Kayıt Edileceği Konumu Seçiniz!",font=("jost",15,"bold"))
+saveLabel.grid(pady=5,padx=0)
 
 #dosyayı kaydet btn
-saveEntry = Button(root,width=10,bg="red",fg="white",text="Dosya Yolunu Seçiniz",command=openLocation)
-saveEntry.grid()
+saveEntry = Button(root,width=20,bg="red",fg="white",text="Dosya Yolunu Seçiniz",command=openLocation)
+saveEntry.grid(pady=5,padx=0)
 
-#hata mesaj lokasyonu
 locationError = Label(root,text="Dosya Yolu Hatalı",fg="red",font=("jost",10))
 locationError.grid()
 
 #indirme kalitesi
 ytdQuality = Label(root,text="Kaliteyi Seçiniz",font=("jost",15))
-ytdQuality.grid()
+ytdQuality.grid(pady=5,padx=0)
 
 #combobox
 choices = ["144p", "720p", "Only Audio"]
 ytdchoices = ttk.Combobox(root,values=choices)
-ytdchoices.grid()
+ytdchoices.grid(pady=5,padx=0)
 
 #indirme btn
-downloadbtn = Button(root, text="İndir",width=10,bg="red",fg="white",command=DownloadVideo)
-downloadbtn.grid()
+downloadbtn = Button(root,text="İndir",width=10,bg="red",fg="white",command=DownloadVideo)
+downloadbtn.grid(pady=10,padx=0)
 
 #developer label
-developerlabel = Label(root,text="Mehmet Solak",font=("jost,15"))
-developerlabel.grid()
+developerlabel = Label(root,text="Developer Knetic!",font=("jost,15"))
+developerlabel.grid(padx= 0, pady= 50)
 
 root.mainloop()
