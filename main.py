@@ -74,7 +74,7 @@ ytdQuality = Label(root,text="Kaliteyi Seçiniz",font=("jost",15))
 ytdQuality.grid()
 
 #combobox
-choices = ["720p", "144p", "Only Audio"]
+choices = ["144p", "720p", "Only Audio"]
 ytdchoices = ttk.Combobox(root,values=choices)
 ytdchoices.grid()
 
